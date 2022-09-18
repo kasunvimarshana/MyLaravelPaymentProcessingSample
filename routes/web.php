@@ -15,6 +15,10 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::post('/pay', 'PaymentController@pay')->name('pay');
+Route::get('/approval', 'PaymentController@approval')->name('approval');
+Route::get('/canceld', 'PaymentController@canceld')->name('canceld');
+
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Currency;
+use App\PaymentPlatform;
 
 class HomeController extends Controller
 {
@@ -23,6 +25,11 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        $currencies = Currency::all();
+        $paymentPlatforms = PaymentPlatform::all();
+        return view('home', [
+            'currencies' => $currencies,
+            'paymentPlatforms' => $paymentPlatforms
+        ]);
     }
 }
