@@ -39,12 +39,34 @@ class StripeService
 
     public function handlePayment(Request $request)
     {
-       //
+        $request->validate([
+            'payment_method' => 'required',
+        ]);
+
+        $intent = $this->createIntent($request->value, $request->currency, $request->payment_method);
+
+        session()->put('paymentIntentId', $intent->id);
+
+        return redirect()->route('approval');
     }
 
     public function handleApproval()
     {
-        //
+        if (session()->has('paymentIntentId')) {
+            $paymentIntentId = session()->get('paymentIntentId');
+
+            $confirmation = $this->confirmPayment($paymentIntentId);
+
+            if ($confirmation->status === 'succeeded') {
+                $name = $confirmation->charges->data[0]->billing_details->name;
+                $currency = strtoupper($confirmation->currency);
+                $amount = $confirmation->amount / $this->resolveFactor($currency);
+
+                return redirect()
+                    ->route('home')
+                    ->withSuccess(['payment' => "Thanks, {$name}. We received your {$amount}{$currency} payment."]);
+            }
+        }
     }
 
     public function resolveFactor($currency)
@@ -56,5 +78,28 @@ class StripeService
         }
 
         return 100;
+    }
+
+    public function createIntent($value, $currency, $paymentMethod)
+    {
+        return $this->makeRequest(
+            'POST',
+            '/v1/payment_intents',
+            [],
+            [
+                'amount' => round($value * $this->resolveFactor($currency)),
+                'currency' => strtolower($currency),
+                'payment_method' => $paymentMethod,
+                'confirmation_method' => 'manual',
+            ],
+        );
+    }
+
+    public function confirmPayment($paymentIntentId)
+    {
+        return $this->makeRequest(
+            'POST',
+            "/v1/payment_intents/{$paymentIntentId}/confirm",
+        );
     }
 }
