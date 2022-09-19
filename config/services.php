@@ -41,7 +41,7 @@ return [
         'base_uri' => env('STRIPE_BASE_URI'),
         'key' => env('STRIPE_KEY'),
         'secret' => env('STRIPE_SECRET'),
-        'class' => App\Services\PaypalService::class
+        'class' => App\Services\StripeService::class
     ]
 
 ];

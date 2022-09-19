@@ -24,12 +24,17 @@ class StripeService
 
     public function resolveAuthorization(&$queryParams, &$formParams, &$headers)
     {
-        //
+        $headers['Authorization'] = $this->resolveAccessToken();
     }
 
     public function decodeResponse($response)
     {
         return json_decode($response);
+    }
+
+    public function resolveAccessToken()
+    {
+        return "Bearer {$this->secret}";
     }
 
     public function handlePayment(Request $request)
