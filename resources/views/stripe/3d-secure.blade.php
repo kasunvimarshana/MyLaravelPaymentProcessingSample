@@ -1,3 +1,4 @@
+<!-- https://stripe.com/docs/strong-customer-authentication -->
 @extends('layouts.app')
 
 @section('content')

@@ -19,6 +19,22 @@ Route::post('/pay', 'PaymentController@pay')->name('pay');
 Route::get('/approval', 'PaymentController@approval')->name('approval');
 Route::get('/cancelled', 'PaymentController@cancelled')->name('cancelled');
 
+Route::prefix('subscribe')
+    ->name('subscribe.')
+    ->group(function () {
+        Route::get('/', 'SubscriptionController@show')
+            ->name('show');
+
+        Route::post('/', 'SubscriptionController@store')
+            ->name('store');
+
+        Route::get('/approval', 'SubscriptionController@approval')
+            ->name('approval');
+
+        Route::get('/cancelled', 'SubscriptionController@cancelled')
+            ->name('cancelled');
+    });
+
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
