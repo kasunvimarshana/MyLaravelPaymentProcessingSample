@@ -173,4 +173,17 @@ class PayPalService
             $isJsonRequest = true,
         );
     }
+
+    public function validateSubscription(Request $request)
+    {
+        if (session()->has('subscriptionId')) {
+            $subscriptionId = session()->get('subscriptionId');
+
+            session()->forget('subscriptionId');
+
+            return $request->subscription_id == $subscriptionId;
+        }
+
+        return false;
+    }
 }
